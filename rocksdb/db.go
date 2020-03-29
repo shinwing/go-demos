@@ -17,10 +17,10 @@ func newDB(path string) *gorocksdb.DB {
 
 	option.SetBlockBasedTableFactory(blockBasedTblOpt)
 	option.SetAllowConcurrentMemtableWrites(false)
+	option.SetPrefixExtractor(gorocksdb.NewFixedPrefixTransform(5))
 
 	store, err := gorocksdb.OpenDb(option, path)
 	if err != nil {
-		store.Close()
 		panic(err)
 	}
 	return store
@@ -28,11 +28,11 @@ func newDB(path string) *gorocksdb.DB {
 
 type RDB struct {
 	*gorocksdb.DB
-	writeOpts *gorocksdb.WriteOptions
 	readOpts  *gorocksdb.ReadOptions
+	writeOpts *gorocksdb.WriteOptions
 }
 
-func NewRocksDb(path string) *RDB {
+func NewRocksDB(path string) *RDB {
 	db := &RDB{
 		newDB(path),
 		gorocksdb.NewDefaultReadOptions(),
@@ -51,8 +51,12 @@ func (db *RDB) Gett(key []byte) (*gorocksdb.Slice, error) {
 	return db.Get(db.readOpts, key)
 }
 
-func (db *RDB) Close() {
-	db.writeOpts.Destroy()
+func (db *RDB) GetIterator() *gorocksdb.Iterator {
+	return db.NewIterator(db.readOpts)
+}
+
+func (db *RDB) CloseDB() {
 	db.readOpts.Destroy()
+	db.writeOpts.Destroy()
 	db.Close()
 }
