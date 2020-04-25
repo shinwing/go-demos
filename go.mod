@@ -3,6 +3,7 @@ module shinwing.com/demo
 go 1.13
 
 require (
+	github.com/Shopify/sarama v1.26.1
 	github.com/arl/assertgo v0.0.0-20180702120748-a1be5afdc871
 	github.com/facebookgo/ensure v0.0.0-20200202191622-63f1cf65ac4c // indirect
 	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect

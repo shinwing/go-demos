@@ -1,6 +1,8 @@
 package main
 
-import assert "github.com/arl/assertgo"
+import (
+	assert "github.com/arl/assertgo"
+)
 
 type storager string
 
